@@ -1,5 +1,6 @@
 package com.codepath.android.booksearch.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +24,7 @@ import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
@@ -46,8 +49,13 @@ public class BookListActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
-        // Checkpoint #3
+        // [DONE] Checkpoint #3
         // Switch Activity to Use a Toolbar
+        // Find the toolbar view inside the activity layout
+        Toolbar toolbar = (Toolbar) binding.toolbar;
+        // Sets the Toolbar to act as the ActionBar for this Activity window.
+        // Make sure the toolbar exists in the activity and is not null
+        setSupportActionBar(toolbar);
         // see http://guides.codepath.org/android/Using-the-App-ToolBar#using-toolbar-as-actionbar
 
         rvBooks = findViewById(R.id.rvBooks);
@@ -62,6 +70,26 @@ public class BookListActivity extends AppCompatActivity {
                         BookListActivity.this,
                         "An item at position " + position + " clicked!",
                         Toast.LENGTH_SHORT).show();
+
+//                // gets item position
+//                int position = getAdapterPosition();
+
+                // make sure the position is valid, i.e. actually exists in the view
+                if (position != RecyclerView.NO_POSITION) {
+                    // get the movie at the position, this won't work if the class is static
+                    Book book = abooks.get(position);
+
+                    Log.d("BookListActivity", String.format("Showing details for '%s'", book.getTitle()));
+                    // create intent for the new activity
+                    Intent intent = new Intent(BookListActivity.this, BookDetailActivity.class);
+                    /* serialize the movie using parceler, use its short name as a key
+                     * imow: wrap up Movie object to be delivered to the MovieDetailsActivity
+                     * .class.getSimpleName(): https://www.geeksforgeeks.org/class-getsimplename-method-in-java-with-examples/*/
+                    intent.putExtra(Book.class.getSimpleName(), Parcels.wrap(book));
+
+                    // show the activity
+                    startActivity(intent);
+                }
 
                 // Handle item click here:
                 // Checkpoint #5
@@ -125,6 +153,10 @@ public class BookListActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_book_list, menu);
 
+        // [DONE] Checkpoint #4
+        // Add SearchView to Toolbar
+        // Refer to http://guides.codepath.org/android/Extended-ActionBar-Guide#adding-searchview-to-actionbar guide for more details
+
 ////        MenuInflater inflater = getMenuInflater();
 ////        inflater.inflate(R.menu.main, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
@@ -154,11 +186,6 @@ public class BookListActivity extends AppCompatActivity {
             }
         });
         return super.onCreateOptionsMenu(menu);
-
-        // Checkpoint #4
-        // Add SearchView to Toolbar
-        // Refer to http://guides.codepath.org/android/Extended-ActionBar-Guide#adding-searchview-to-actionbar guide for more details
-
 
         // Checkpoint #7 Show Progress Bar
         // see https://guides.codepath.org/android/Handling-ProgressBars#progress-within-actionbar

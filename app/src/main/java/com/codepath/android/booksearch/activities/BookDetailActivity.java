@@ -1,6 +1,8 @@
 package com.codepath.android.booksearch.activities;
 
 import android.os.Bundle;
+
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -8,11 +10,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.android.booksearch.R;
+import com.codepath.android.booksearch.models.Book;
+
+import org.parceler.Parcels;
 
 public class BookDetailActivity extends AppCompatActivity {
     private ImageView ivBookCover;
     private TextView tvTitle;
     private TextView tvAuthor;
+
+    private Book book;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,11 +32,15 @@ public class BookDetailActivity extends AppCompatActivity {
         tvAuthor = (TextView) findViewById(R.id.tvAuthor);
 
         // Extract book object from intent extras
+        book = (Book) Parcels.unwrap(getIntent().getParcelableExtra(Book.class.getSimpleName()));
 
         // Checkpoint #5
         // Reuse the Toolbar previously used in the detailed activity by referring to this guide
         // Follow using a Toolbar guide to set the Toolbar as the ActionBar.
         // Change activity title to reflect the book title by referring to the Configuring The ActionBar guide.
+//        ActionBar actionBar = getSupportActionBar(); // or getActionBar();
+//        getSupportActionBar().setTitle(book.getTitle()); // set the top title
+
         // (Bonus) Get additional book information like publisher and publish_year from the Books API and display in details view.
     }
 
@@ -51,6 +62,8 @@ public class BookDetailActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
